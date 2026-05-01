@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>كراسيفي لوكس — ساعات فاخرة</title>
+  <meta name="description" content="متجر كراسيفي لوكس — ساعات فاخرة ومجموعة مختارة.">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body data-page="home">
+
+  <header class="navbar">
+    <a href="index.html" class="nav-logo">
+      Krasivy Lux
+      <span>قطع وقت فاخرة</span>
+    </a>
+    <div class="nav-right">
+      <button class="cart-btn" onclick="window.location.href='#watches'" aria-label="التسوق">
+        <i data-feather="shopping-bag"></i>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="القائمة">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="side-menu" id="sideMenu">
+    <nav>
+      <a href="#watches">متجر</a>
+      <a href="#about">من نحن</a>
+      <a href="#contact">اتصل</a>
+      <a href="admin.html" id="adminNavLink" class="admin-link" style="display:none">⚙ الإدارة</a>
+    </nav>
+  </div>
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <section class="hero-section">
+    <div id="heroBanners">
+      <div class="hero-banner">
+        <img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?fm=jpg&amp;fit=crop&amp;w=1600&amp;q=82&amp;auto=format" alt="جلد">
+        <div class="overlay">
+          <div class="label"><small>سوار جلد طبيعي</small>جلد</div>
+        </div>
+      </div>
+      <div class="hero-banner hero-banner--last">
+        <img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?fm=jpg&amp;fit=crop&amp;w=1600&amp;q=82&amp;auto=format" alt="فولاذ">
+        <div class="overlay">
+          <div class="label"><small>ستانلس ستيل</small>فولاذ</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="zr-express-strip" role="note">
+    <span class="zr-express-strip__mark">ZR Express</span>
+    <span class="zr-express-strip__text">التوصيل عبر ZR Express — أسعار حسب الولاية ونوع التسليم (منزل / نقطة استلام)</span>
+  </div>
+
+  <section class="home-categories" id="categories" aria-label="التصنيفات">
+    <div class="home-categories__inner">
+      <p class="home-categories__eyebrow">المجموعات</p>
+      <nav class="home-categories__nav" role="navigation">
+        <button type="button" class="home-cat-chip is-active" data-cat="all" aria-pressed="true">الكل</button>
+        <button type="button" class="home-cat-chip" data-cat="cuir" aria-pressed="false">جلد</button>
+        <button type="button" class="home-cat-chip" data-cat="acier" aria-pressed="false">فولاذ</button>
+      </nav>
+    </div>
+  </section>
+
+  <section id="watches">
+    <div class="section-header section-header--shop">
+      <p class="shop-eyebrow">اختياراتنا</p>
+      <h2 id="shopTitle">ساعات</h2>
+      <div class="gold-line"></div>
+    </div>
+
+    <div class="watches-grid-wrap">
+      <div class="watches-grid" id="watchesGrid">
+        <div class="loading-grid">
+          <div class="spinner"></div>
+          جاري تحميل المجموعة…
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about-block">
+    <p class="about-block__tag">حكايتنا</p>
+    <h2 class="about-block__title">صناعة للتميّز</h2>
+    <p class="about-block__text">
+      كراسيفي لوكس يقدّم أفضل الساعات لمن يبحث عن دقة الزمن وأناقة التفاصيل.
+    </p>
+  </section>
+
+  <section id="contact" class="contact-block">
+    <p class="contact-block__tag">تواصل معنا</p>
+    <h2 class="contact-block__title">اتصل بنا</h2>
+    <p class="contact-block__line">📧 krasivylux@gmail.com</p>
+    <p class="contact-block__line">📞 ‎+213 781278480‎</p>
+  </section>
+
+  <footer>
+    <div class="logo">Krasivy Lux</div>
+    <div class="social-links">
+      <a class="social-link" id="footerInstagram" href="#" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <a class="social-link" id="footerTiktok" href="#" target="_blank" rel="noopener" aria-label="TikTok">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.75a4.85 4.85 0 01-1.01-.06z"/>
+        </svg>
+      </a>
+    </div>
+    <p>© 2026 Krasivy Lux — جميع الحقوق محفوظة</p>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+  <script>feather.replace();</script>
+</body>
+</html>

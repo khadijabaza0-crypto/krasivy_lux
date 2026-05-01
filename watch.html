@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>تفاصيل الساعة — Krasivy Lux</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="watch">
+
+  <header class="navbar">
+    <a href="index.html" class="nav-logo">
+      Krasivy Lux
+      <span>قطع وقت فاخرة</span>
+    </a>
+    <div class="nav-right">
+      <button class="cart-btn" aria-label="السلّة">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="القائمة">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="side-menu" id="sideMenu">
+    <nav>
+      <a href="index.html#watches">المتجر</a>
+      <a href="index.html#about">من نحن</a>
+      <a href="index.html#contact">اتصل بنا</a>
+      <a href="admin.html" id="adminNavLink" class="admin-link" style="display:none">⚙ الإدارة</a>
+    </nav>
+  </div>
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <main class="watch-detail">
+    <a href="index.html" class="back-btn">
+      <svg class="rtl-flip-x" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
+      العودة للمجموعة
+    </a>
+
+    <div id="watchLoading" style="text-align:center;padding:80px 20px">
+      <div class="spinner"></div>
+      <p style="color:var(--gray);font-size:13px">جاري التحميل…</p>
+    </div>
+
+    <div id="watchContent" style="display:none">
+      <div class="main-img">
+        <img id="mainImg" src="" alt="">
+      </div>
+      <div class="color-thumbs" id="colorThumbs"></div>
+      <div class="watch-info">
+        <div class="watch-type" id="watchType"></div>
+        <h1 id="watchName"></h1>
+        <div class="price" id="watchPrice"></div>
+        <p class="desc" id="watchDesc"></p>
+        <div class="color-selector">
+          <label>اختيار اللون</label>
+          <div class="color-options" id="colorOptions" role="group" aria-label="اختيار اللون"></div>
+        </div>
+        <button type="button" class="btn-primary" id="btnOrderNow" disabled>
+          اختر لوناً للطلب
+        </button>
+      </div>
+    </div>
+
+    <div id="watchNotFound" style="display:none;text-align:center;padding:80px 20px">
+      <p style="font-size:40px">🕰</p>
+      <p style="color:var(--gray);margin-top:12px">المنتج غير موجود.</p>
+      <a href="index.html" class="btn-primary" style="margin-top:24px;display:inline-block;width:auto;padding:14px 32px">العودة للمتجر</a>
+    </div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const watchId = params.get('id');
+    let currentWatch = null;
+    let selectedColor = null;
+    let colorImages = {};
+    /** Noms dans l’ordre des boutons (alignés sur vignettes si possible) */
+    let paletteColors = [];
+    /** [[nom, url], …] pour les miniatures */
+    let thumbPairs = [];
+
+    function escapeHtmlSafe(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function selectColor(color) {
+      if (color === undefined || color === null || String(color).trim() === '') return;
+      selectedColor = typeof color === 'string' ? color : String(color);
+      document.querySelectorAll('.color-option[data-color-idx]').forEach(el => {
+        const i = parseInt(el.dataset.colorIdx, 10);
+        el.classList.toggle('selected', !Number.isNaN(i) && paletteColors[i] === selectedColor);
+      });
+      document.querySelectorAll('.color-thumb').forEach(el => {
+        const i = parseInt(el.dataset.idx, 10);
+        const name = thumbPairs[i] ? thumbPairs[i][0] : null;
+        el.classList.toggle('active', name === selectedColor);
+      });
+      if (colorImages[selectedColor]) {
+        const img = document.getElementById('mainImg');
+        img.style.opacity = '0';
+        setTimeout(() => {
+          img.src = colorImages[selectedColor];
+          img.style.opacity = '1';
+        }, 200);
+      }
+      const btn = document.getElementById('btnOrderNow');
+      btn.disabled = false;
+      btn.textContent = 'اطلب الآن';
+    }
+
+    function goToOrder() {
+      if (!selectedColor || !currentWatch) return;
+      const img = colorImages[selectedColor] || currentWatch.mainImage;
+      const payload = {
+        id: currentWatch.id,
+        name: currentWatch.name,
+        price: String(currentWatch.price ?? ''),
+        color: selectedColor,
+        img: img || '',
+      };
+      try {
+        sessionStorage.setItem('kl_order_ctx', JSON.stringify(payload));
+      } catch (_) {}
+      window.location.href = 'order.html';
+    }
+
+    function initColorPickDelegation() {
+      const thumbsEl = document.getElementById('colorThumbs');
+      const optsEl = document.getElementById('colorOptions');
+      if (thumbsEl && !thumbsEl.dataset.pickBound) {
+        thumbsEl.dataset.pickBound = '1';
+        thumbsEl.addEventListener('click', (e) => {
+          const hit = e.target.closest('.color-thumb[data-idx]');
+          if (!hit) return;
+          const i = parseInt(hit.dataset.idx, 10);
+          const pair = thumbPairs[i];
+          if (pair && pair[0]) selectColor(pair[0]);
+        });
+      }
+      if (optsEl && !optsEl.dataset.pickBound) {
+        optsEl.dataset.pickBound = '1';
+        optsEl.addEventListener('click', (e) => {
+          const hit = e.target.closest('.color-option[data-color-idx]');
+          if (!hit) return;
+          const i = parseInt(hit.dataset.colorIdx, 10);
+          const c = paletteColors[i];
+          if (c != null) selectColor(c);
+        });
+      }
+      const btn = document.getElementById('btnOrderNow');
+      if (btn && !btn.dataset.pickBound) {
+        btn.dataset.pickBound = '1';
+        btn.addEventListener('click', goToOrder);
+      }
+    }
+
+    async function loadWatchPage() {
+      initColorPickDelegation();
+      initNav();
+      updateCartBadge();
+      if (!watchId) { showNotFound(); return; }
+
+      const watches = await fetchWatches();
+      const watch = watches.find(w => w.id === watchId);
+      if (!watch) { showNotFound(); return; }
+
+      currentWatch = watch;
+      document.title = `${watch.name} — Krasivy Lux`;
+
+      const fromSheet = (watch.colors || '').split(',').map(c => c.trim()).filter(Boolean);
+      colorImages = {};
+      if (watch.colorImages) {
+        watch.colorImages.split(',').forEach(entry => {
+          const ix = entry.indexOf('::');
+          if (ix === -1) return;
+          const color = entry.slice(0, ix).trim();
+          const url = entry.slice(ix + 2).trim();
+          if (color && url) colorImages[color] = url;
+        });
+      }
+
+      thumbPairs = Object.entries(colorImages);
+      paletteColors = fromSheet.length ? fromSheet : thumbPairs.map(([k]) => k);
+
+      const mainImg = document.getElementById('mainImg');
+      mainImg.src = watch.mainImage || '';
+      mainImg.alt = watch.name;
+
+      document.getElementById('watchType').textContent = watch.type || 'فاخرة';
+      document.getElementById('watchName').textContent = watch.name;
+      document.getElementById('watchPrice').textContent = `${watch.price} دج`;
+      document.getElementById('watchDesc').textContent =
+        watch.description || 'قطعة دقيقة تجمع بين الأناقة وجودة التصنيع.';
+
+      const thumbsContainer = document.getElementById('colorThumbs');
+      if (thumbPairs.length > 0) {
+        thumbsContainer.innerHTML = thumbPairs.map(([color, url], i) => `
+          <div class="color-thumb" data-idx="${i}" role="button" tabindex="0" aria-label="${escapeHtmlSafe(color)}">
+            <img src="${String(url).replace(/"/g, '&quot;')}" alt="" onerror="this.parentElement.style.display='none'">
+          </div>`).join('');
+      } else {
+        thumbsContainer.innerHTML = '';
+      }
+
+      const colorContainer = document.getElementById('colorOptions');
+      if (!paletteColors.length) {
+        colorContainer.innerHTML = '<span class="color-option-fallback">لا توجد ألوان مسجلة — الطلب بدون لون محدّد غير متاح.</span>';
+        document.getElementById('btnOrderNow').disabled = true;
+      } else {
+        colorContainer.innerHTML = paletteColors.map((c, i) =>
+          `<button type="button" class="color-option" data-color-idx="${i}">${escapeHtmlSafe(c)}</button>`
+        ).join('');
+      }
+
+      selectedColor = null;
+      const btn = document.getElementById('btnOrderNow');
+      btn.disabled = paletteColors.length !== 1;
+      btn.textContent = paletteColors.length === 1 ? 'اطلب الآن' : 'اختر لوناً للطلب';
+
+      document.getElementById('watchLoading').style.display = 'none';
+      document.getElementById('watchContent').style.display = 'block';
+
+      if (paletteColors.length === 1) {
+        selectColor(paletteColors[0]);
+      }
+    }
+
+    function showNotFound() {
+      document.getElementById('watchLoading').style.display = 'none';
+      document.getElementById('watchNotFound').style.display = 'block';
+    }
+
+    loadWatchPage();
+  </script>
+</body>
+</html>

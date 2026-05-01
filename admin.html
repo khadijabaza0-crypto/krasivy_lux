@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Admin — Krasivy Lux</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="admin">
+
+  <!-- ══════════════════════════════════════════
+       LOGIN SCREEN (shown by default)
+  ═══════════════════════════════════════════ -->
+  <div id="loginScreen" class="admin-login">
+    <div class="lock-icon">🔐</div>
+    <h2>Admin Access</h2>
+    <p>Krasivy Lux — Restricted Area</p>
+
+    <div style="width:100%;max-width:320px">
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="adminPassword" placeholder="Enter admin password"
+               onkeydown="if(event.key==='Enter')checkPassword()">
+      </div>
+      <button class="btn-gold" onclick="checkPassword()">Enter</button>
+      <p class="error-msg" id="loginError" style="margin-top:12px">Incorrect password.</p>
+    </div>
+
+    <a href="index.html" style="margin-top:32px;font-size:11px;letter-spacing:2px;color:var(--gray)">← Back to Store</a>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       ADMIN PANEL (hidden until authenticated)
+  ═══════════════════════════════════════════ -->
+  <div id="adminPanel" style="display:none">
+
+    <header class="navbar">
+      <a href="index.html" class="nav-logo">
+        Krasivy Lux
+        <span>Admin Panel</span>
+      </a>
+      <button onclick="logout()" style="color:var(--gray);font-size:11px;letter-spacing:2px">LOGOUT</button>
+    </header>
+
+    <main class="admin-panel">
+      <div class="admin-header">
+        <h1>Dashboard</h1>
+        <p>Manage your watch catalog and view orders</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('watches')">Watches</button>
+        <button class="tab-btn" onclick="switchTab('orders')">Orders</button>
+      </div>
+
+      <!-- ── Tab: Watches ── -->
+      <div class="tab-panel active" id="tabWatches">
+
+        <!-- Add Watch Form -->
+        <div class="admin-section">
+          <h2>Add New Watch</h2>
+          <div class="admin-form">
+            <div class="form-group form-full">
+              <label>Watch Name *</label>
+              <input type="text" id="aName" placeholder="e.g. Royal Prestige">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Type *</label>
+                <input type="text" id="aType" placeholder="Cuir / Acier">
+              </div>
+              <div class="form-group">
+                <label>Price (DZD) *</label>
+                <input type="number" id="aPrice" placeholder="15000">
+              </div>
+            </div>
+            <div class="form-group form-full">
+              <label>Description</label>
+              <textarea id="aDesc" placeholder="Short description of the watch…" style="min-height:70px"></textarea>
+            </div>
+            <div class="form-group form-full">
+              <label>Main Image * (URL ou photo téléphone)</label>
+              <input type="url" id="aMainImg" placeholder="https://... ou chargez une photo ci-dessous">
+              <label class="admin-file-pick">
+                <input type="file" id="aMainImgFile" accept="image/*" capture="environment">
+                <span>📷 Prendre une photo / choisir depuis la galerie</span>
+              </label>
+              <p id="aMainImgStatus" style="color:var(--gray);font-size:11px;margin-top:8px;min-height:16px"></p>
+            </div>
+            <div class="form-group form-full" style="background:var(--dark3);padding:14px;border-radius:4px">
+              <label style="color:var(--gold);margin-bottom:10px">Colors & Images</label>
+              <p style="color:var(--gray);font-size:11px;margin-bottom:12px">Add each color with its image URL. At least 1 required.</p>
+              <div id="colorRows"></div>
+              <button onclick="addColorRow()" style="color:var(--gold);font-size:11px;letter-spacing:2px;margin-top:10px;text-decoration:underline;background:none;border:none;cursor:pointer">
+                + Add Color
+              </button>
+            </div>
+            <button class="btn-gold form-full" onclick="addWatch()">Add Watch to Catalog</button>
+            <p class="error-msg form-full" id="addError">Please fill all required fields.</p>
+          </div>
+        </div>
+
+        <!-- Current Watches -->
+        <div class="admin-section">
+          <h2>Current Catalog</h2>
+          <div class="watches-admin-list" id="adminWatchList">
+            <div style="text-align:center;padding:30px;color:var(--gray);font-size:12px">
+              <div class="spinner"></div>Loading…
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Tab: Orders ── -->
+      <div class="tab-panel" id="tabOrders">
+        <div class="admin-section">
+          <h2>Recent Orders</h2>
+          <div id="ordersList">
+            <div style="text-align:center;padding:30px;color:var(--gray);font-size:12px">
+              <div class="spinner"></div>Loading…
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>إتمام الطلب — Krasivy Lux</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="order">
+
+  <header class="navbar">
+    <a href="index.html" class="nav-logo">
+      Krasivy Lux
+      <span>قطع وقت فاخرة</span>
+    </a>
+    <div class="nav-right">
+      <button class="hamburger" id="hamburger" aria-label="القائمة"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="side-menu" id="sideMenu">
+    <nav>
+      <a href="index.html#watches">المتجر</a>
+      <a href="index.html#about">من نحن</a>
+      <a href="index.html#contact">اتصل بنا</a>
+    </nav>
+  </div>
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <main class="order-form-page">
+    <a href="javascript:history.back()" class="order-back rtl-back-link">
+      <svg class="rtl-flip-x" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
+      رجوع
+    </a>
+
+    <h1 class="order-page-title">طلبك</h1>
+    <p class="subtitle">أكمل معلوماتك واختر ولايتك وطريقة الاستلام</p>
+
+    <div class="zr-express-banner">
+      <strong>شحن حصري بواسطة ZR Express مع توصيل الطلب خلال 2–3 أيام فقط</strong>
+      <span>تُحسب رسوم الشحن وفق القائمة أدناه بعد اختيار الولاية و«المنزل» أو «نقطة الاستلام (Stop Desk / مكتب)».</span>
+    </div>
+
+    <div class="order-summary-mini" id="orderSummary"></div>
+    <div class="shipping-estimate" id="shippingEstimate" hidden>
+      <div class="shipping-estimate__row"><span id="deliveryLabelEcho"></span></div>
+      <div class="shipping-estimate__total">الشحن: <strong id="shippingAmountEcho">—</strong> دج</div>
+    </div>
+
+    <div id="formContainer">
+      <div class="form-group">
+        <label for="fieldName">الاسم الكامل *</label>
+        <input type="text" id="fieldName" placeholder="اكتب اسمك" required autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label for="fieldPhone">الهاتف *</label>
+        <input type="tel" id="fieldPhone" placeholder="05 xxx xx xx أو +213 …" required autocomplete="tel">
+      </div>
+
+      <div class="form-group">
+        <label for="wilayaSelect">الولاية *</label>
+        <select id="wilayaSelect" required>
+          <option value="">— اختر الولاية —</option>
+        </select>
+      </div>
+
+      <fieldset class="form-fieldset delivery-fieldset">
+        <legend class="delivery-legend">نوع التسليم *</legend>
+        <label class="delivery-option">
+          <input type="radio" name="deliveryType" id="deliveryHome" value="domicile" checked>
+          <span>توصيل للمنزل</span>
+        </label>
+        <label class="delivery-option">
+          <input type="radio" name="deliveryType" id="deliveryDesk" value="stopDesk">
+          <span>Stop Desk — استلام من المكتب / نقطة الاستلام</span>
+        </label>
+      </fieldset>
+
+      <div class="wilaya-price-hint" id="wilayaPriceHint" aria-live="polite"></div>
+
+      <div class="form-group">
+        <label for="fieldNotes">ملاحظات (اختياري)</label>
+        <textarea id="fieldNotes" placeholder="أي طلب خاص أو ملاحظة للتوصيل…"></textarea>
+      </div>
+
+      <button type="button" class="btn-primary" id="submitBtn">
+        تأكيد الطلب
+      </button>
+      <p class="error-msg" id="formError">يرجى تعبئة الحقول المطلوبة.</p>
+    </div>
+
+    <div class="success-msg" id="successMsg">
+      <div class="check">✅</div>
+      <h2>تم استلام الطلب!</h2>
+      <p class="subtitle" style="margin-top:10px;color:var(--gray)">سنتواصل معك قريباً لتأكيد التسليم.</p>
+      <a href="index.html" class="btn-primary" style="margin-top:28px;display:inline-block;width:auto;padding:14px 32px">متابعة التسوق</a>
+    </div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="wilayas.js"></script>
+  <script src="app.js"></script>
+  <script>
+    const p = new URLSearchParams(location.search);
+    let order = {
+      id: p.get('id') || '',
+      name: p.get('name') || '',
+      price: p.get('price') || '',
+      color: p.get('color') || '',
+      img: p.get('img') || '',
+    };
+    try {
+      const cached = JSON.parse(sessionStorage.getItem('kl_order_ctx') || 'null');
+      if (cached && cached.id) {
+        order = {
+          id: order.id || cached.id || '',
+          name: order.name || cached.name || 'ساعة',
+          price: order.price ?? cached.price ?? '',
+          color: order.color || cached.color || '',
+          img: order.img || cached.img || '',
+        };
+      }
+    } catch (_) {}
+    if (!order.name) order.name = 'ساعة';
+
+    function renderSummary() {
+      document.getElementById('orderSummary').innerHTML = `
+        <img src="${escapeAttr(order.img)}" alt="" onerror="this.style.display='none'">
+        <div class="sum-info">
+          <div class="sum-name">${escapeHtml(order.name)}</div>
+          <div class="sum-color">${escapeHtml(order.color)}</div>
+        </div>
+        <div class="sum-price">${escapeHtml(order.price)} دج</div>`;
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function escapeAttr(url) {
+      return String(url || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    }
+
+    function fillWilayaSelect() {
+      const sel = document.getElementById('wilayaSelect');
+      const sorted = [...WILAYAS_ZR_EXPRESS].sort((a, b) => a.ar.localeCompare(b.ar, 'ar'));
+      sorted.forEach(w => {
+        const opt = document.createElement('option');
+        opt.value = String(w.code);
+        opt.textContent = `${w.code.toString().padStart(2, '0')} — ${w.ar} (${w.fr})`;
+        opt.dataset.domicile = w.domicile;
+        opt.dataset.desk = w.stopDesk;
+        sel.appendChild(opt);
+      });
+    }
+
+    function getSelectedWilaya() {
+      const sel = document.getElementById('wilayaSelect');
+      const opt = sel.selectedOptions[0];
+      if (!opt || !opt.value) return null;
+      return findWilayaByCode(parseInt(opt.value, 10));
+    }
+
+    function getDeliveryModePayload() {
+      const home = document.getElementById('deliveryHome').checked;
+      return home ? 'domicile' : 'stopDesk';
+    }
+
+    function getShippingFee() {
+      const w = getSelectedWilaya();
+      if (!w) return null;
+      return getDeliveryModePayload() === 'domicile' ? w.domicile : w.stopDesk;
+    }
+
+    function refreshShippingUi() {
+      const w = getSelectedWilaya();
+      const est = document.getElementById('shippingEstimate');
+      const hint = document.getElementById('wilayaPriceHint');
+      if (!w) {
+        est.hidden = true;
+        hint.textContent = '';
+        return;
+      }
+      const dom = document.getElementById('deliveryHome').checked;
+      hint.innerHTML =
+        `<span class="wilaya-price-hint__line"><strong>${w.ar}</strong> — المنزل: <strong>${w.domicile}</strong> دج</span>` +
+        `<span class="wilaya-price-hint__line">Stop Desk / مكتب: <strong>${w.stopDesk}</strong> دج</span>`;
+      const fee = dom ? w.domicile : w.stopDesk;
+      document.getElementById('deliveryLabelEcho').textContent = dom ? 'توصيل للمنزل' : 'استلام من نقطة / مكتب (Stop Desk)';
+      document.getElementById('shippingAmountEcho').textContent = fee;
+      est.hidden = false;
+    }
+
+    document.getElementById('wilayaSelect').addEventListener('change', refreshShippingUi);
+    document.querySelectorAll('input[name="deliveryType"]').forEach(r =>
+      r.addEventListener('change', refreshShippingUi));
+
+    async function submitOrder() {
+      const name = document.getElementById('fieldName').value.trim();
+      const phone = document.getElementById('fieldPhone').value.trim();
+      const notes = document.getElementById('fieldNotes').value.trim();
+      const errEl = document.getElementById('formError');
+      const btn = document.getElementById('submitBtn');
+      const wilaya = getSelectedWilaya();
+
+      if (!name || !phone || !wilaya) {
+        errEl.classList.add('show');
+        return;
+      }
+      errEl.classList.remove('show');
+
+      const domicileChosen = document.getElementById('deliveryHome').checked;
+      const deliveryMode = domicileChosen ? 'À domicile' : 'Stop Desk';
+      const shipping = domicileChosen ? wilaya.domicile : wilaya.stopDesk;
+      const notesOnly = notes;
+      const noteBlock =
+        `[ZR Express | ${deliveryMode} | Livraison: ${shipping} DA]\nWilaya ${wilaya.code} — ${wilaya.ar} (${wilaya.fr})\n` +
+        (notesOnly ? notesOnly + '\n' : '');
+
+      btn.textContent = 'جاري الإرسال…';
+      btn.disabled = true;
+
+      try {
+        const payload = {
+          action: 'addOrder',
+          watchId: order.id,
+          watchName: order.name,
+          watchColor: order.color,
+          watchPrice: order.price,
+          clientName: name,
+          clientPhone: phone,
+          wilayaCode: wilaya.code,
+          wilayaName: `${wilaya.ar} (${wilaya.fr})`,
+          deliveryMode: deliveryMode,
+          shippingDZD: shipping,
+          carrier: 'ZR Express',
+          clientAddress: '—',
+          notes: noteBlock.trim(),
+          timestamp: new Date().toISOString(),
+        };
+
+        const result = await postToScript(payload);
+        if (result && result.success) {
+          try {
+            sessionStorage.removeItem('kl_order_ctx');
+          } catch (_) {}
+          document.getElementById('formContainer').style.display = 'none';
+          document.getElementById('orderSummary').style.display = 'none';
+          document.getElementById('shippingEstimate').style.display = 'none';
+          document.getElementById('successMsg').classList.add('show');
+        } else {
+          showToast(result?.error || 'تعذر الإرسال. تحقق من الاتصال.');
+          btn.textContent = 'تأكيد الطلب';
+          btn.disabled = false;
+        }
+      } catch (e) {
+        showToast('حدث خطأ. حاول مرة أخرى.');
+        btn.textContent = 'تأكيد الطلب';
+        btn.disabled = false;
+      }
+    }
+
+    renderSummary();
+    fillWilayaSelect();
+    refreshShippingUi();
+    initNav();
+
+    document.getElementById('submitBtn').addEventListener('click', () => submitOrder());
+  </script>
+</body>
+</html>
