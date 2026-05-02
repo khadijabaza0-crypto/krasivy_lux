@@ -155,9 +155,9 @@ function goToWatch(id) {
   window.location.href = `watch.html?id=${id}`;
 }
 
-// صور ثابتة لم يعد يستبدلها كتالوج (روابط CDN ثابتة) — عمود Cuir لا يعتمد على صورة المتجر لتجنب الانقطاع
-const HERO_DEFAULT_CUIR  = 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?fm=jpg&fit=crop&w=1600&q=82&auto=format';
-const HERO_DEFAULT_ACIER = 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?fm=jpg&fit=crop&w=1600&q=82&auto=format';
+// صور ثابتة محلية (cuir.png و acier.png في جذر المشروع)
+const HERO_DEFAULT_CUIR  = '/cuir.png';
+const HERO_DEFAULT_ACIER = '/acier.png';
 
 // ── RENDER HERO BANNERS ───────────────────────────────────────────────────────
 async function renderHeroBanners(preloaded) {
@@ -166,9 +166,9 @@ async function renderHeroBanners(preloaded) {
 
   const watches = preloaded ?? await fetchWatches();
   const t = s => (s || '').toLowerCase();
-const cuirWatch  = watches.find(w => t(w.type).includes('cuir') || (w.type || '').includes('جلد'));
-const acierWatches = watches.filter(w => t(w.type).includes('acier') || t(w.type).includes('steel') || t(w.type).includes('inox'));
-const acierWatch = acierWatches[1] || acierWatches[0];
+  const cuirWatch  = watches.find(w => t(w.type).includes('cuir') || (w.type || '').includes('جلد'));
+  const acierWatches = watches.filter(w => t(w.type).includes('acier') || t(w.type).includes('steel') || t(w.type).includes('inox'));
+  const acierWatch = acierWatches[1] || acierWatches[0];
 
   const banners = [
     {
@@ -179,7 +179,7 @@ const acierWatch = acierWatches[1] || acierWatches[0];
     },
     {
       id:    acierWatch?.id,
-      img:   (acierWatch?.mainImage && String(acierWatch.mainImage).trim()) || HERO_DEFAULT_ACIER,
+      img:   HERO_DEFAULT_ACIER,
       label: 'فولاذ',
       sub:   'ستانلس ستيل',
     },
