@@ -1,6 +1,6 @@
 // ── CONFIG ─────────────────────────────────────────────────────────────────
 // Replace with your Google Apps Script Web App URL after deployment
-const SCRIPT_URL = 'https://script.google.com/macros/library/d/1pWtvpaUkvN6jA3b7SA2Bsi1754txxuPcSGx2Je2ohpelmZ6CwRylJs6g/2';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsUeo6LSyaZEQVBkaA4Uzi6yixPhMAf4yDbTXUJNeNnJwdcjnegIoAYsZcbJYezmb_/exec';
 
 // Social media links - update these
 const INSTAGRAM_URL = 'https://www.instagram.com/krasivy_lux?igsh=b2k0Z3V6OWl1OWZn';
