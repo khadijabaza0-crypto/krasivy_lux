@@ -169,7 +169,7 @@ function addColorRow() {
     </div>
     <input type="url" data-url placeholder="URL image (ou photo ci-dessous)" style="background:var(--dark);border:1px solid rgba(255,255,255,0.08);color:var(--white);font-family:var(--font-body);padding:10px 12px;border-radius:4px;font-size:13px;outline:none;width:100%;box-sizing:border-box">
     <label class="admin-file-pick" style="margin-top:0">
-      <input type="file" accept="image/*" capture="environment">
+      <input type="file" accept="image/*">
       <span>📷 Photo pour cette couleur</span>
     </label>
     <p data-upload-status style="color:var(--gray);font-size:10px;margin:0;min-height:14px"></p>
