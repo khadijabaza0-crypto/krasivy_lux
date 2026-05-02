@@ -164,52 +164,9 @@ const HERO_DEFAULT_ACIER = 'acier.png';
 
 // ── RENDER HERO BANNERS ───────────────────────────────────────────────────────
 async function renderHeroBanners() {
-  const container = document.getElementById('heroBanners');
-  if (!container) return;
-  
-  // Vérifier si déjà rendu
+  // HERO remains exactly as defined in HTML (no dynamic changes).
   if (heroBannersRendered) return;
-  
-  // Marquer comme rendu
   heroBannersRendered = true;
-
-  const fixedBanners = [
-    {
-      id:    null,
-      img:   HERO_DEFAULT_CUIR,
-      label: 'جلد',
-      sub:   'سوار جلد طبيعي',
-    },
-    {
-      id:    null,
-      img:   HERO_DEFAULT_ACIER,
-      label: 'فولاذ',
-      sub:   'ستانلس ستيل',
-    },
-  ];
-
-  const renderBannerItem = (b, isLast) => {
-    const onClick = b.id
-      ? `goToWatch('${b.id}')`
-      : `document.getElementById('categories')?.scrollIntoView({behavior:'smooth'})`;
-    const lastClass = isLast ? ' hero-banner--last' : '';
-    return `
-    <div class="hero-banner${lastClass}" onclick="${onClick}">
-      <img src="${b.img}" alt="${b.label}" onerror="this.src='https://via.placeholder.com/800x400/1a1a1a/888?text=${encodeURIComponent(b.label)}'">
-      <div class="overlay">
-        <div class="label">
-          <small>${b.sub}</small>
-          ${b.label}
-        </div>
-      </div>
-    </div>`;
-  };
-
-  // Au chargement: afficher seulement les 2 images fixes demandées.
-  container.innerHTML = fixedBanners
-    .map((b, i) => renderBannerItem(b, i === fixedBanners.length - 1))
-    .join('');
-
 }
 
 // ── CART (simple count) ───────────────────────────────────────────────────────
