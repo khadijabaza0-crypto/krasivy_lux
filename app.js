@@ -160,9 +160,13 @@ const HERO_DEFAULT_CUIR  = 'cuir.png';
 const HERO_DEFAULT_ACIER = 'acier.png';
 
 // ── RENDER HERO BANNERS ───────────────────────────────────────────────────────
+
 async function renderHeroBanners(preloaded) {
   const container = document.getElementById('heroBanners');
   if (!container) return;
+  
+  // Si déjà rendu, ne pas réinitialiser
+  if (container.innerHTML.trim()) return;
 
   const watches = preloaded ?? await fetchWatches();
   const t = s => (s || '').toLowerCase();
@@ -202,7 +206,6 @@ async function renderHeroBanners(preloaded) {
     </div>`;
   }).join('');
 }
-
 // ── CART (simple count) ───────────────────────────────────────────────────────
 function updateCartBadge() {
   const cart   = JSON.parse(localStorage.getItem('kl_cart') || '[]');
