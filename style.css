@@ -73,7 +73,7 @@ button{cursor:pointer;border:none;background:none;font-family:var(--font-body)}
 
 /* Categories — grille boutique */
 .home-categories{background:var(--bg);border-bottom:1px solid var(--border)}
-.home-categories__inner{max-width:560px;margin:0 auto;padding:28px 20px 22px;text-align:center}
+.home-categories__inner{max-width:100%;margin:0 auto;padding:28px 20px 22px;text-align:center}
 .home-categories__eyebrow{font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;font-weight:400}
 .home-categories__nav{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
 .home-cat-chip{
