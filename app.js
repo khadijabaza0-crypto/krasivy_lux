@@ -156,8 +156,8 @@ function goToWatch(id) {
 }
 
 // صور ثابتة محلية (cuir.png و acier.png في جذر المشروع)
-const HERO_DEFAULT_CUIR  = '/cuir.png';
-const HERO_DEFAULT_ACIER = '/acier.png';
+const HERO_DEFAULT_CUIR  = 'cuir.png';
+const HERO_DEFAULT_ACIER = 'acier.png';
 
 // ── RENDER HERO BANNERS ───────────────────────────────────────────────────────
 async function renderHeroBanners(preloaded) {
