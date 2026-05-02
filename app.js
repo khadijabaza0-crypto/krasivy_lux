@@ -9,9 +9,6 @@ const TIKTOK_URL    = 'https://www.tiktok.com/@krasivy_lux?_r=1&_t=ZS-960XHQtrWP
 // Admin secret (used only as a hint; actual gate is in admin.js)
 const ADMIN_HINT_KEY = 'kl_admin_auth';
 
-// Flag pour tracker si hero banners ont déjà été rendus
-let heroBannersRendered = false;
-
 // ── UTILITY ─────────────────────────────────────────────────────────────────
 function $(sel, ctx = document) { return ctx.querySelector(sel); }
 function $$(sel, ctx = document) { return [...ctx.querySelectorAll(sel)]; }
@@ -158,15 +155,41 @@ function goToWatch(id) {
   window.location.href = `watch.html?id=${id}`;
 }
 
-// صور ثابتة محلية (cuir.png و acier.png في جذر المشروع)
+// صور ثابتة محلية (cuir.png و acier.png في جذر المشروع) - SANS GOOGLE SHEETS
 const HERO_DEFAULT_CUIR  = 'cuir.png';
 const HERO_DEFAULT_ACIER = 'acier.png';
 
-// ── RENDER HERO BANNERS ───────────────────────────────────────────────────────
-async function renderHeroBanners() {
-  // HERO remains exactly as defined in HTML (no dynamic changes).
-  if (heroBannersRendered) return;
-  heroBannersRendered = true;
+// ── RENDER HERO BANNERS - IMAGES FIXES UNIQUEMENT ───────────────────────────────────────────────────────────────────────────────
+function renderHeroBanners() {
+  const container = document.getElementById('heroBanners');
+  if (!container) return;
+
+  const banners = [
+    {
+      img:   HERO_DEFAULT_CUIR,
+      label: 'جلد',
+      sub:   'سوار جلد طبيعي',
+    },
+    {
+      img:   HERO_DEFAULT_ACIER,
+      label: 'فولاذ',
+      sub:   'ستانلس ستيل',
+    },
+  ];
+
+  container.innerHTML = banners.map((b, i) => {
+    const lastClass = i === 1 ? ' hero-banner--last' : '';
+    return `
+    <div class="hero-banner${lastClass}">
+      <img src="${b.img}" alt="${b.label}" onerror="this.src='https://via.placeholder.com/800x400/1a1a1a/888?text=${encodeURIComponent(b.label)}'">
+      <div class="overlay">
+        <div class="label">
+          <small>${b.sub}</small>
+          ${b.label}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── CART (simple count) ───────────────────────────────────────────────────────
@@ -207,6 +230,9 @@ function bindHomeCategoryChips(homeWatches) {
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   updateCartBadge();
+  
+  // AFFICHER LES HERO BANNERS AVEC LES IMAGES FIXES
+  renderHeroBanners();
 
   const page = document.body.dataset.page;
   if (page === 'home') {
@@ -227,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     (async () => {
       const homeWatches = await fetchWatches();
-      renderHeroBanners(homeWatches);
       bindHomeCategoryChips(homeWatches);
       await renderHome(homeWatches, 'all');
     })();
