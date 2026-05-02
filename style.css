@@ -58,10 +58,11 @@ button{cursor:pointer;border:none;background:none;font-family:var(--font-body)}
 /* Hero (home) */
 .hero-section{padding-top:var(--nav-h);background:var(--bg)}
 #heroBanners{display:flex;flex-direction:column;gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
-.hero-banner{position:relative;overflow:hidden;cursor:pointer;aspect-ratio:16/11;max-height:min(52vw,340px)}
+.hero-banner{position:relative;overflow:hidden;cursor:pointer;aspect-ratio:1/1;max-height:min(70vw,500px);width:100%}
 @media(min-width:640px){
-  #heroBanners{flex-direction:row;max-height:min(42vw,400px)}
-  .hero-banner{flex:1;aspect-ratio:auto;max-height:400px;min-height:280px;margin-bottom:0!important}
+  #heroBanners{flex-direction:row;max-height:min(50vw,450px)}
+  .hero-banner{flex:1;aspect-ratio:auto;max-height:450px;min-height:350px;margin-bottom:0!important}
+}
 }
 .hero-banner img{width:100%;height:100%;object-fit:cover;transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);filter:saturate(0.92) contrast(1.02)}
 .hero-banner:active img,.hero-banner:hover img{transform:scale(1.04)}
