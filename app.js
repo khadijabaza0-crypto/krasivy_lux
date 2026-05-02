@@ -163,7 +163,7 @@ const HERO_DEFAULT_CUIR  = 'cuir.png';
 const HERO_DEFAULT_ACIER = 'acier.png';
 
 // ── RENDER HERO BANNERS ───────────────────────────────────────────────────────
-async function renderHeroBanners(preloaded) {
+async function renderHeroBanners() {
   const container = document.getElementById('heroBanners');
   if (!container) return;
   
@@ -173,21 +173,15 @@ async function renderHeroBanners(preloaded) {
   // Marquer comme rendu
   heroBannersRendered = true;
 
-  const watches = preloaded ?? await fetchWatches();
-  const t = s => (s || '').toLowerCase();
-  const cuirWatch  = watches.find(w => t(w.type).includes('cuir') || (w.type || '').includes('جلد'));
-  const acierWatches = watches.filter(w => t(w.type).includes('acier') || t(w.type).includes('steel') || t(w.type).includes('inox'));
-  const acierWatch = acierWatches[1] || acierWatches[0];
-
   const fixedBanners = [
     {
-      id:    cuirWatch?.id,
+      id:    null,
       img:   HERO_DEFAULT_CUIR,
       label: 'جلد',
       sub:   'سوار جلد طبيعي',
     },
     {
-      id:    acierWatch?.id,
+      id:    null,
       img:   HERO_DEFAULT_ACIER,
       label: 'فولاذ',
       sub:   'ستانلس ستيل',
