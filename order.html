@@ -7,18 +7,31 @@
   <link rel="stylesheet" href="style.css">
   <style>
     .order-total-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       background: var(--gold-pale);
       border: 1px solid rgba(160,120,64,0.3);
       border-radius: var(--radius);
       padding: 14px 16px;
       margin-bottom: 18px;
+      font-size: 13px;
+      color: var(--text2);
+    }
+    .order-total-box__row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+    .order-total-box__final {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-top: 1px solid rgba(160,120,64,0.25);
+      margin-top: 8px;
+      padding-top: 10px;
       font-size: 15px;
       color: var(--text);
+      font-weight: 500;
     }
-    .order-total-box strong {
+    .order-total-box__final strong {
       font-family: var(--font-display);
       font-size: 22px;
       color: var(--gold);
@@ -103,8 +116,18 @@
       </div>
 
       <div class="order-total-box" id="orderTotalBox" hidden>
-        <span>المجموع الكلي</span>
-        <strong id="orderTotalEcho">—</strong> دج
+        <div class="order-total-box__row">
+          <span>سعر الساعة</span>
+          <span id="totalPriceEcho">— دج</span>
+        </div>
+        <div class="order-total-box__row">
+          <span id="totalDeliveryLabel">رسوم الشحن</span>
+          <span id="totalFeeEcho">— دج</span>
+        </div>
+        <div class="order-total-box__final">
+          <span>المجموع الكلي</span>
+          <span><strong id="orderTotalEcho">—</strong> دج</span>
+        </div>
       </div>
 
       <button type="button" class="btn-primary" id="submitBtn">
@@ -217,8 +240,11 @@
       document.getElementById('shippingAmountEcho').textContent = fee;
 
       // ── TOTAL ──
-      const productPrice = parseInt(order.price) || 0;
+      const productPrice = parseInt(String(order.price).replace(/[\s\u00a0]/g, '').replace(',', '.')) || 0;
       const total = productPrice + fee;
+      document.getElementById('totalPriceEcho').textContent = productPrice.toLocaleString('fr-DZ') + ' دج';
+      document.getElementById('totalDeliveryLabel').textContent = dom ? 'توصيل للمنزل' : 'Stop Desk';
+      document.getElementById('totalFeeEcho').textContent = fee.toLocaleString('fr-DZ') + ' دج';
       document.getElementById('orderTotalEcho').textContent = total.toLocaleString('fr-DZ');
       document.getElementById('orderTotalBox').hidden = false;
 
