@@ -166,8 +166,9 @@ async function renderHeroBanners(preloaded) {
 
   const watches = preloaded ?? await fetchWatches();
   const t = s => (s || '').toLowerCase();
-  const cuirWatch  = watches.find(w => t(w.type).includes('cuir') || (w.type || '').includes('جلد'));
-  const acierWatch = watches.find(w => t(w.type).includes('acier') || t(w.type).includes('steel') || t(w.type).includes('inox'));
+const cuirWatch  = watches.find(w => t(w.type).includes('cuir') || (w.type || '').includes('جلد'));
+const acierWatches = watches.filter(w => t(w.type).includes('acier') || t(w.type).includes('steel') || t(w.type).includes('inox'));
+const acierWatch = acierWatches[1] || acierWatches[0];
 
   const banners = [
     {
