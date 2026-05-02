@@ -179,7 +179,7 @@ async function renderHeroBanners(preloaded) {
   const acierWatches = watches.filter(w => t(w.type).includes('acier') || t(w.type).includes('steel') || t(w.type).includes('inox'));
   const acierWatch = acierWatches[1] || acierWatches[0];
 
-  const banners = [
+  const fixedBanners = [
     {
       id:    cuirWatch?.id,
       img:   HERO_DEFAULT_CUIR,
@@ -194,11 +194,11 @@ async function renderHeroBanners(preloaded) {
     },
   ];
 
-  container.innerHTML = banners.map((b, i) => {
+  const renderBannerItem = (b, isLast) => {
     const onClick = b.id
       ? `goToWatch('${b.id}')`
       : `document.getElementById('categories')?.scrollIntoView({behavior:'smooth'})`;
-    const lastClass = i === 1 ? ' hero-banner--last' : '';
+    const lastClass = isLast ? ' hero-banner--last' : '';
     return `
     <div class="hero-banner${lastClass}" onclick="${onClick}">
       <img src="${b.img}" alt="${b.label}" onerror="this.src='https://via.placeholder.com/800x400/1a1a1a/888?text=${encodeURIComponent(b.label)}'">
@@ -209,7 +209,13 @@ async function renderHeroBanners(preloaded) {
         </div>
       </div>
     </div>`;
-  }).join('');
+  };
+
+  // Au chargement: afficher seulement les 2 images fixes demandées.
+  container.innerHTML = fixedBanners
+    .map((b, i) => renderBannerItem(b, i === fixedBanners.length - 1))
+    .join('');
+
 }
 
 // ── CART (simple count) ───────────────────────────────────────────────────────
