@@ -9,6 +9,9 @@ const TIKTOK_URL    = 'https://www.tiktok.com/@krasivy_lux?_r=1&_t=ZS-960XHQtrWP
 // Admin secret (used only as a hint; actual gate is in admin.js)
 const ADMIN_HINT_KEY = 'kl_admin_auth';
 
+// Flag pour tracker si hero banners ont déjà été rendus
+let heroBannersRendered = false;
+
 // ── UTILITY ─────────────────────────────────────────────────────────────────
 function $(sel, ctx = document) { return ctx.querySelector(sel); }
 function $$(sel, ctx = document) { return [...ctx.querySelectorAll(sel)]; }
@@ -160,13 +163,15 @@ const HERO_DEFAULT_CUIR  = 'cuir.png';
 const HERO_DEFAULT_ACIER = 'acier.png';
 
 // ── RENDER HERO BANNERS ───────────────────────────────────────────────────────
-
 async function renderHeroBanners(preloaded) {
   const container = document.getElementById('heroBanners');
   if (!container) return;
   
-  // Si déjà rendu, ne pas réinitialiser
-  if (container.innerHTML.trim()) return;
+  // Vérifier si déjà rendu
+  if (heroBannersRendered) return;
+  
+  // Marquer comme rendu
+  heroBannersRendered = true;
 
   const watches = preloaded ?? await fetchWatches();
   const t = s => (s || '').toLowerCase();
@@ -206,6 +211,7 @@ async function renderHeroBanners(preloaded) {
     </div>`;
   }).join('');
 }
+
 // ── CART (simple count) ───────────────────────────────────────────────────────
 function updateCartBadge() {
   const cart   = JSON.parse(localStorage.getItem('kl_cart') || '[]');
