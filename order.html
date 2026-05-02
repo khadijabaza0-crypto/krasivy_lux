@@ -5,6 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>إتمام الطلب — Krasivy Lux</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .order-total-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--gold-pale);
+      border: 1px solid rgba(160,120,64,0.3);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .order-total-box strong {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--gold);
+    }
+  </style>
 </head>
 <body data-page="order">
 
@@ -41,6 +60,7 @@
     </div>
 
     <div class="order-summary-mini" id="orderSummary"></div>
+
     <div class="shipping-estimate" id="shippingEstimate" hidden>
       <div class="shipping-estimate__row"><span id="deliveryLabelEcho"></span></div>
       <div class="shipping-estimate__total">الشحن: <strong id="shippingAmountEcho">—</strong> دج</div>
@@ -80,6 +100,11 @@
       <div class="form-group">
         <label for="fieldNotes">ملاحظات (اختياري)</label>
         <textarea id="fieldNotes" placeholder="أي طلب خاص أو ملاحظة للتوصيل…"></textarea>
+      </div>
+
+      <div class="order-total-box" id="orderTotalBox" hidden>
+        <span>المجموع الكلي</span>
+        <strong id="orderTotalEcho">—</strong> دج
       </div>
 
       <button type="button" class="btn-primary" id="submitBtn">
@@ -179,6 +204,7 @@
       const hint = document.getElementById('wilayaPriceHint');
       if (!w) {
         est.hidden = true;
+        document.getElementById('orderTotalBox').hidden = true;
         hint.textContent = '';
         return;
       }
@@ -189,6 +215,13 @@
       const fee = dom ? w.domicile : w.stopDesk;
       document.getElementById('deliveryLabelEcho').textContent = dom ? 'توصيل للمنزل' : 'استلام من نقطة / مكتب (Stop Desk)';
       document.getElementById('shippingAmountEcho').textContent = fee;
+
+      // ── TOTAL ──
+      const productPrice = parseInt(order.price) || 0;
+      const total = productPrice + fee;
+      document.getElementById('orderTotalEcho').textContent = total.toLocaleString('fr-DZ');
+      document.getElementById('orderTotalBox').hidden = false;
+
       est.hidden = false;
     }
 
