@@ -1,3 +1,237 @@
+
+Claude finished the response
+You said: une petite modification sur la formulaire pour faire un ordre je veux just un total quand user entrer sa wilaya et la livraison /**
+
+<!DOCTYPE html> <html lang="ar" dir="rtl"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"> <title>إتمام الطلب — Krasivy Lux</title> <link rel="stylesheet" href="style.css"> </head> <body data-page="order"> <header cla
+
+pasted
+
+
+// ── CONFIG ───────────────────────────────────────────────────────────────── // Replace with your Google Apps Script Web App URL after deployment const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsUeo6LSyaZEQVBkaA4Uzi6yixPhMAf4yDbTXUJNeNnJwdcjnegIoAYsZcbJYezmb_/exec'; // Social media
+
+pasted
+
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Jost:wght@200;300;400;500&display=swap'); /* ── Variables — WHITE THEME ── */ :root { --gold: #a07840; --gold-light: #c9a96e; --gold-pale: #f
+
+pasted
+
+une petite modification sur la formulaire pour faire un ordre je veux just un total quand user entrer sa wilaya et la livraison /**
+ * Wilayas Algerie — tarifs DA (liste client, transporteur ZR Express)
+ */
+const WILAYAS_ZR_EXPRESS = [
+  { code: 1,  ar: 'أدرار', fr: 'Adrar', domicile: 1400, stopDesk: 970 },
+  { code: 2,  ar: 'الشلف', fr: 'Chlef', domicile: 800, stopDesk: 520 },
+  { code: 3,  ar: 'الأغواط', fr: 'Laghouat', domicile: 950, stopDesk: 620 },
+  { code: 4,  ar: 'أم البواقي', fr: 'Oum El Bouaghi', domicile: 750, stopDesk: 520 },
+  { code: 5,  ar: 'باتنة', fr: 'Batna', domicile: 800, stopDesk: 520 },
+  { code: 6,  ar: 'بجاية', fr: 'Béjaïa', domicile: 750, stopDesk: 520 },
+  { code: 7,  ar: 'بسكرة', fr: 'Biskra', domicile: 950, stopDesk: 620 },
+  { code: 8,  ar: 'بشار', fr: 'Béchar', domicile: 1100, stopDesk: 720 },
+  { code: 9,  ar: 'البليدة', fr: 'Blida', domicile: 750, stopDesk: 520 },
+  { code: 10, ar: 'البويرة', fr: 'Bouira', domicile: 750, stopDesk: 520 },
+  { code: 11, ar: 'تمنراست', fr: 'Tamanrasset', domicile: 1600, stopDesk: 1120 },
+  { code: 12, ar: 'تبسة', fr: 'Tébessa', domicile: 850, stopDesk: 520 },
+  { code: 13, ar: 'تلمسان', fr: 'Tlemcen', domicile: 900, stopDesk: 570 },
+  { code: 14, ar: 'تيارت', fr: 'Tiaret', domicile: 800, stopDesk: 520 },
+  { code: 15, ar: 'تيزي وزو', fr: 'Tizi Ouzou', domicile: 750, stopDesk: 520 },
+  { code: 16, ar: 'الجزائر العاصمة', fr: 'Alger', domicile: 600, stopDesk: 470 },
+  { code: 17, ar: 'الجلفة', fr: 'Djelfa', domicile: 950, stopDesk: 620 },
+  { code: 18, ar: 'جيجل', fr: 'Jijel', domicile: 750, stopDesk: 520 },
+  { code: 20, ar: 'سعيدة', fr: 'Saida', domicile: 800, stopDesk: 570 },
+  { code: 21, ar: 'سكيكدة', fr: 'Skikda', domicile: 750, stopDesk: 520 },
+  { code: 22, ar: 'سيدي بلعباس', fr: 'Sidi Bel Abbès', domicile: 800, stopDesk: 520 },
+  { code: 23, ar: 'عنابة', fr: 'Annaba', domicile: 800, stopDesk: 520 },
+  { code: 24, ar: 'قالمة', fr: 'Guelma', domicile: 750, stopDesk: 520 },
+  { code: 25, ar: 'قسنطينة', fr: 'Constantine', domicile: 750, stopDesk: 520 },
+  { code: 26, ar: 'المدية', fr: 'Médéa', domicile: 800, stopDesk: 520 },
+  { code: 27, ar: 'مستغانم', fr: 'Mostaganem', domicile: 800, stopDesk: 520 },
+  { code: 28, ar: 'مسيلة', fr: 'Msila', domicile: 850, stopDesk: 570 },
+  { code: 29, ar: 'معسكر', fr: 'Mascara', domicile: 800, stopDesk: 520 },
+  { code: 30, ar: 'ورقلة', fr: 'Ouargla', domicile: 950, stopDesk: 670 },
+  { code: 31, ar: 'وهران', fr: 'Oran', domicile: 750, stopDesk: 520 },
+  { code: 32, ar: 'البيض', fr: 'El Bayadh', domicile: 1100, stopDesk: 670 },
+  { code: 34, ar: 'برج بوعريريج', fr: 'Bordj Bou Arréridj', domicile: 600, stopDesk: 520 },
+  { code: 35, ar: 'بومرداس', fr: 'Boumerdès', domicile: 750, stopDesk: 520 },
+  { code: 36, ar: 'الطارف', fr: 'El Tarf', domicile: 800, stopDesk: 520 },
+  { code: 38, ar: 'تيسمسيلت', fr: 'Tissemsilt', domicile: 800, stopDesk: 520 },
+  { code: 39, ar: 'الوادي', fr: 'El Oued', domicile: 950, stopDesk: 670 },
+  { code: 40, ar: 'خنشلة', fr: 'Khenchela', domicile: 800, stopDesk: 520 },
+  { code: 41, ar: 'سوق أهراس', fr: 'Souk Ahras', domicile: 750, stopDesk: 520 },
+  { code: 42, ar: 'تيبازة', fr: 'Tipaza', domicile: 750, stopDesk: 520 },
+  { code: 43, ar: 'ميلة', fr: 'Mila', domicile: 700, stopDesk: 520 },
+  { code: 44, ar: 'عين الدفلى', fr: 'Aïn Defla', domicile: 750, stopDesk: 520 },
+  { code: 45, ar: 'النعامة', fr: 'Naâma', domicile: 1100, stopDesk: 670 },
+];
+function findWilayaByCode(code) {
+  const n = typeof code === 'string' ? parseInt(code, 10) : code;
+  return WILAYAS_ZR_EXPRESS.find(w => w.code === n) || null;
+}
+
+Show more
+3:43 PM
+Claude responded: Je vais ajouter un récapitulatif du total (prix produit + frais de livraison) dans la section estimation de livraison.
+Je vais ajouter un récapitulatif du total (prix produit + frais de livraison) dans la section estimation de livraison.
+
+
+
+هذا ما يجب إضافته في order.html. استبدل قسم shippingEstimate الحالي بهذا:
+
+html
+<div class="shipping-estimate" id="shippingEstimate" hidden>
+  <div class="shipping-estimate__row"><span id="deliveryLabelEcho"></span></div>
+  <div class="shipping-estimate__row">الشحن: <strong id="shippingAmountEcho">—</strong> دج</div>
+  <div class="shipping-estimate__total" style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px;font-size:16px;">
+    المجموع الكلي: <strong id="orderTotalEcho" style="color:var(--gold);font-family:var(--font-display);font-size:20px;">—</strong> دج
+  </div>
+</div>
+ثم في دالة refreshShippingUi() في السكريبت، أضف هذا السطر بعد est.hidden = false;:
+
+js
+const productPrice = parseInt(order.price) || 0;
+document.getElementById('orderTotalEcho').textContent = (productPrice + fee).toLocaleString('ar-DZ');
+وتأكد أن refreshShippingUi يُستدعى أيضاً عند تغيير نوع التسليم — وهو موجود بالفعل في الكود.
+
+هذا كل شيء، سطران فقط بدون أي تعديل على منطق الإرسال أو البنية.
+
+You said: donner le code total et cette modification doit pas changer le design du site just ajoute un petit chapms qui affiche le total
+donner le code total et cette modification doit pas changer le design du site just ajoute un petit chapms qui affiche le total
+
+3:46 PM
+Claude responded: Voici le fichier order.
+Voici le fichier order.html complet avec juste le champ total ajouté :
+
+
+Created a file, read a file
+Created a file, read a file
+التعديل الوحيد الذي تم هو إضافة سطر واحد داخل shipping-estimate الموجود أصلاً:
+
+html
+<div class="shipping-estimate__row" style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;">
+  المجموع: <strong id="orderTotalEcho" style="color:var(--gold)">—</strong> دج
+</div>
+وسطر واحد في دالة refreshShippingUi():
+
+js
+const productPrice = parseInt(order.price) || 0;
+const total = productPrice + fee;
+document.getElementById('orderTotalEcho').textContent = total.toLocaleString('fr-DZ');
+لا شيء آخر تغيّر — نفس الديزاين، نفس المنطق، فقط المجموع يظهر تلقائياً بمجرد اختيار الولاية وطريقة التسليم.
+
+
+Order
+Code · HTML 
+You said: le total doit etre afficher a la fin
+le total doit etre afficher a la fin
+
+3:51 PM
+Claude responded: maintenant je mets à jour refreshShippingUi pour afficher/cacher la boîte du total : الآن أضيف الـ CSS للـ order-total-box في نهاية ملف style.
+
+Edited 2 files, viewed a file
+Edited 2 files, viewed a file
+maintenant je mets à jour refreshShippingUi pour afficher/cacher la boîte du total :
+
+
+Edited 3 files, viewed 2 files
+Edited 3 files, viewed 2 files
+الآن أضيف الـ CSS للـ order-total-box في نهاية ملف style.css. لكن بما أنك تريد التعديل فقط على order.html، سأضيف الستايل مباشرة داخله:
+
+
+Edited a file, read a file
+Edited a file, read a file
+المجموع الكلي الآن يظهر فوق زر التأكيد مباشرة — بعد الملاحظات وقبل الزر. يبقى مخفياً حتى يختار المستخدم الولاية وطريقة التسليم، ثم يظهر بخلفية ذهبية فاتحة تتناسب مع ديزاين الموقع.
+
+
+Order
+Code · HTML 
+You said: il affiche just le tarif du livraison je veux le prix du montre + tarfis (selon le choix bureau ou domicile )
+il affiche just le tarif du livraison je veux le prix du montre + tarfis (selon le choix bureau ou domicile )
+
+3:55 PM
+Claude responded: Le problème vient du fait que order.
+Le problème vient du fait que order.price est peut-être vide ou mal parsé. Voici le fichier corrigé :
+
+
+Viewed 2 files
+Viewed 2 files
+Le problème est clair — order.price peut contenir des espaces ou des virgules comme "12 500" ce qui fait échouer parseInt. Je corrige ça proprement :
+
+
+Fix price parsing to strip spaces and non-numeric chars before parseInt
+Fix price parsing to strip spaces and non-numeric chars before parseInt
+Maintenant aussi je veux afficher le détail dans la boîte — prix montre + livraison = total — pour que ce soit clair :
+
+
+Viewed 2 files, edited a file, ran a command
+Viewed 2 files, edited a file, ran a command
+Maintenant mettre à jour le JS pour remplir les 3 champs :
+
+
+Update JS to fill all 3 rows in total box
+Update JS to fill all 3 rows in total box
+Maintenant mettre à jour le CSS du total box :
+
+
+Ran a command, read a file
+Ran a command, read a file
+Maintenant la boîte affiche le détail complet juste avant le bouton :
+
+سعر الساعة          12 500 دج
+توصيل للمنزل          800 دج
+─────────────────────────────
+المجموع الكلي      13 300 دج
+Et si l'utilisateur change entre منزل و Stop Desk, le total se recalcule automatiquement avec le bon tarif.
+
+
+Order
+Code · HTML 
+You said: il recupure pas le prix du montre
+il recupure pas le prix du montre
+
+3:59 PM
+Claude responded: Le problème est que order.
+Le problème est que order.price arrive souvent comme chaîne avec des espaces ("12 500") ou est vide au moment du calcul. Ajoutons un console.log pour voir exactement ce qui arrive :
+
+
+Viewed 2 files
+Viewed 2 files
+Le problème est clair : ligne 165, order.price ?? cached.price ?? '' — l'opérateur ?? ne remplace que null/undefined, donc si order.price vaut '' (chaîne vide depuis l'URL), il garde '' et n'utilise jamais cached.price. Il faut utiliser || à la place.
+
+
+Fix price fallback from ?? to ||
+Fix price fallback from ?? to ||
+Maintenant aussi, le parsing du prix doit gérer tous les formats possibles ("12 500", "12500", "12,500") :
+
+
+Ran a command, read a file
+Ran a command, read a file
+Deux corrections appliquées :
+
+1 — Récupération du prix (?? → ||)
+
+js
+// avant (bug) — garde '' vide au lieu de lire cached.price
+price: order.price ?? cached.price ?? '',
+
+// après (corrigé) — si l'URL donne '', prend cached.price
+price: order.price || cached.price || '',
+2 — Parsing du prix — supprime tous les caractères non-numériques (12 500 دج → 12500) :
+
+js
+const productPrice = parseInt(String(order.price).replace(/[^0-9]/g, '')) || 0;
+Maintenant سعر الساعة affiche bien le prix de la montre, et le total = prix + livraison selon le choix منزل / Stop Desk.
+
+
+Order
+Code · HTML 
+
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+Order · HTML
+Copy
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -39,7 +273,7 @@
   </style>
 </head>
 <body data-page="order">
-
+ 
   <header class="navbar">
     <a href="index.html" class="nav-logo">
       Krasivy Lux
@@ -57,28 +291,28 @@
     </nav>
   </div>
   <div class="menu-overlay" id="menuOverlay"></div>
-
+ 
   <main class="order-form-page">
     <a href="javascript:history.back()" class="order-back rtl-back-link">
       <svg class="rtl-flip-x" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
       رجوع
     </a>
-
+ 
     <h1 class="order-page-title">طلبك</h1>
     <p class="subtitle">أكمل معلوماتك واختر ولايتك وطريقة الاستلام</p>
-
+ 
     <div class="zr-express-banner">
       <strong>شحن حصري بواسطة ZR Express مع توصيل الطلب خلال 2–3 أيام فقط</strong>
       <span>تُحسب رسوم الشحن وفق القائمة أدناه بعد اختيار الولاية و«المنزل» أو «نقطة الاستلام (Stop Desk / مكتب)».</span>
     </div>
-
+ 
     <div class="order-summary-mini" id="orderSummary"></div>
-
+ 
     <div class="shipping-estimate" id="shippingEstimate" hidden>
       <div class="shipping-estimate__row"><span id="deliveryLabelEcho"></span></div>
       <div class="shipping-estimate__total">الشحن: <strong id="shippingAmountEcho">—</strong> دج</div>
     </div>
-
+ 
     <div id="formContainer">
       <div class="form-group">
         <label for="fieldName">الاسم الكامل *</label>
@@ -88,14 +322,14 @@
         <label for="fieldPhone">الهاتف *</label>
         <input type="tel" id="fieldPhone" placeholder="05 xxx xx xx أو +213 …" required autocomplete="tel">
       </div>
-
+ 
       <div class="form-group">
         <label for="wilayaSelect">الولاية *</label>
         <select id="wilayaSelect" required>
           <option value="">— اختر الولاية —</option>
         </select>
       </div>
-
+ 
       <fieldset class="form-fieldset delivery-fieldset">
         <legend class="delivery-legend">نوع التسليم *</legend>
         <label class="delivery-option">
@@ -107,14 +341,14 @@
           <span>Stop Desk — استلام من المكتب / نقطة الاستلام</span>
         </label>
       </fieldset>
-
+ 
       <div class="wilaya-price-hint" id="wilayaPriceHint" aria-live="polite"></div>
-
+ 
       <div class="form-group">
         <label for="fieldNotes">ملاحظات (اختياري)</label>
         <textarea id="fieldNotes" placeholder="أي طلب خاص أو ملاحظة للتوصيل…"></textarea>
       </div>
-
+ 
       <div class="order-total-box" id="orderTotalBox" hidden>
         <div class="order-total-box__row">
           <span>سعر الساعة</span>
@@ -129,13 +363,13 @@
           <span><strong id="orderTotalEcho">—</strong> دج</span>
         </div>
       </div>
-
+ 
       <button type="button" class="btn-primary" id="submitBtn">
         تأكيد الطلب
       </button>
       <p class="error-msg" id="formError">يرجى تعبئة الحقول المطلوبة.</p>
     </div>
-
+ 
     <div class="success-msg" id="successMsg">
       <div class="check">✅</div>
       <h2>تم استلام الطلب!</h2>
@@ -143,7 +377,7 @@
       <a href="index.html" class="btn-primary" style="margin-top:28px;display:inline-block;width:auto;padding:14px 32px">متابعة التسوق</a>
     </div>
   </main>
-
+ 
   <div id="toast" class="toast"></div>
   <script src="wilayas.js"></script>
   <script src="app.js"></script>
@@ -162,14 +396,14 @@
         order = {
           id: order.id || cached.id || '',
           name: order.name || cached.name || 'ساعة',
-          price: order.price ?? cached.price ?? '',
+          price: order.price || cached.price || '',
           color: order.color || cached.color || '',
           img: order.img || cached.img || '',
         };
       }
     } catch (_) {}
     if (!order.name) order.name = 'ساعة';
-
+ 
     function renderSummary() {
       document.getElementById('orderSummary').innerHTML = `
         <img src="${escapeAttr(order.img)}" alt="" onerror="this.style.display='none'">
@@ -179,17 +413,17 @@
         </div>
         <div class="sum-price">${escapeHtml(order.price)} دج</div>`;
     }
-
+ 
     function escapeHtml(s) {
       const d = document.createElement('div');
       d.textContent = s;
       return d.innerHTML;
     }
-
+ 
     function escapeAttr(url) {
       return String(url || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
     }
-
+ 
     function fillWilayaSelect() {
       const sel = document.getElementById('wilayaSelect');
       const sorted = [...WILAYAS_ZR_EXPRESS].sort((a, b) => a.ar.localeCompare(b.ar, 'ar'));
@@ -202,25 +436,25 @@
         sel.appendChild(opt);
       });
     }
-
+ 
     function getSelectedWilaya() {
       const sel = document.getElementById('wilayaSelect');
       const opt = sel.selectedOptions[0];
       if (!opt || !opt.value) return null;
       return findWilayaByCode(parseInt(opt.value, 10));
     }
-
+ 
     function getDeliveryModePayload() {
       const home = document.getElementById('deliveryHome').checked;
       return home ? 'domicile' : 'stopDesk';
     }
-
+ 
     function getShippingFee() {
       const w = getSelectedWilaya();
       if (!w) return null;
       return getDeliveryModePayload() === 'domicile' ? w.domicile : w.stopDesk;
     }
-
+ 
     function refreshShippingUi() {
       const w = getSelectedWilaya();
       const est = document.getElementById('shippingEstimate');
@@ -238,23 +472,23 @@
       const fee = dom ? w.domicile : w.stopDesk;
       document.getElementById('deliveryLabelEcho').textContent = dom ? 'توصيل للمنزل' : 'استلام من نقطة / مكتب (Stop Desk)';
       document.getElementById('shippingAmountEcho').textContent = fee;
-
+ 
       // ── TOTAL ──
-      const productPrice = parseInt(String(order.price).replace(/[\s\u00a0]/g, '').replace(',', '.')) || 0;
+      const productPrice = parseInt(String(order.price).replace(/[^0-9]/g, '')) || 0;
       const total = productPrice + fee;
       document.getElementById('totalPriceEcho').textContent = productPrice.toLocaleString('fr-DZ') + ' دج';
       document.getElementById('totalDeliveryLabel').textContent = dom ? 'توصيل للمنزل' : 'Stop Desk';
       document.getElementById('totalFeeEcho').textContent = fee.toLocaleString('fr-DZ') + ' دج';
       document.getElementById('orderTotalEcho').textContent = total.toLocaleString('fr-DZ');
       document.getElementById('orderTotalBox').hidden = false;
-
+ 
       est.hidden = false;
     }
-
+ 
     document.getElementById('wilayaSelect').addEventListener('change', refreshShippingUi);
     document.querySelectorAll('input[name="deliveryType"]').forEach(r =>
       r.addEventListener('change', refreshShippingUi));
-
+ 
     async function submitOrder() {
       const name = document.getElementById('fieldName').value.trim();
       const phone = document.getElementById('fieldPhone').value.trim();
@@ -262,13 +496,13 @@
       const errEl = document.getElementById('formError');
       const btn = document.getElementById('submitBtn');
       const wilaya = getSelectedWilaya();
-
+ 
       if (!name || !phone || !wilaya) {
         errEl.classList.add('show');
         return;
       }
       errEl.classList.remove('show');
-
+ 
       const domicileChosen = document.getElementById('deliveryHome').checked;
       const deliveryMode = domicileChosen ? 'À domicile' : 'Stop Desk';
       const shipping = domicileChosen ? wilaya.domicile : wilaya.stopDesk;
@@ -276,10 +510,10 @@
       const noteBlock =
         `[ZR Express | ${deliveryMode} | Livraison: ${shipping} DA]\nWilaya ${wilaya.code} — ${wilaya.ar} (${wilaya.fr})\n` +
         (notesOnly ? notesOnly + '\n' : '');
-
+ 
       btn.textContent = 'جاري الإرسال…';
       btn.disabled = true;
-
+ 
       try {
         const payload = {
           action: 'addOrder',
@@ -298,7 +532,7 @@
           notes: noteBlock.trim(),
           timestamp: new Date().toISOString(),
         };
-
+ 
         const result = await postToScript(payload);
         if (result && result.success) {
           try {
@@ -319,13 +553,14 @@
         btn.disabled = false;
       }
     }
-
+ 
     renderSummary();
     fillWilayaSelect();
     refreshShippingUi();
     initNav();
-
+ 
     document.getElementById('submitBtn').addEventListener('click', () => submitOrder());
   </script>
 </body>
 </html>
+ 
